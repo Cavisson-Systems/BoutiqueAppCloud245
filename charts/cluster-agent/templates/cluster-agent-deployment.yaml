@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+  name: cluster-agent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cluster-agent.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cluster-agent
+  template:
+    metadata:
+      labels:
+        app: cluster-agent
+      {{- with .Values.podFinalizers }}
+      finalizers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      serviceAccountName: cluster-agent-sa
+      containers:
+        - name: cluster-agent
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: VPA_NAMESPACE
+              value: {{ .Values.vpaNamespace | quote }}
+            - name: ZAP_NAMESPACE
+              value: {{ .Values.zapNamespace | quote }}
+            - name: KUBEOPT_URL
+              value: {{ .Values.kubeoptUrl | quote }}
+            - name: DATASOURCE_NAME
+              value: {{ .Values.datasourceName | quote }}
+            - name: CLUSTER_NAME
+              value: {{ .Values.clusterName | quote }}
+            # Flux disabled. Agents from this change on install Flux only when FLUX_ENABLED="true";
+            # the explicit "false" also keeps older agent images (which defaulted to on) from installing it.
+            - name: FLUX_ENABLED
+              value: "false"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu | quote }}
+              memory: {{ .Values.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu | quote }}
+              memory: {{ .Values.resources.limits.memory | quote }}

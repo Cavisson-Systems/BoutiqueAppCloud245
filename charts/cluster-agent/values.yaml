@@ -1,0 +1,33 @@
+enabled: true
+
+image:
+  repository: cavissonsystem/cluster-agent
+  tag: 4.16.0.B69
+  pullPolicy: IfNotPresent
+
+replicas: 1
+terminationGracePeriodSeconds: 200
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "384Mi"
+  limits:
+    cpu: "1"
+    memory: "768Mi"
+
+# KubeOpt backend (prefer https)
+kubeoptUrl: "http://demoai.cav-test.com:8282"
+datasourceName: "BoutiqueAzureCreds"
+clusterName: "cavission-test"
+
+# Namespaces of the components the agent manages
+vpaNamespace: "cavisson-vpa"
+zapNamespace: "security-system"
+
+# Flux and Kyverno are disabled: the agent only collects cluster inventory.
+# The agent installs Flux only when FLUX_ENABLED="true" and Kyverno only when
+# KYVERNO_POLICY_ENABLED="true"; the Deployment renders FLUX_ENABLED="false" explicitly
+# for older agent images, which installed Flux when the variable was unset.
+
+extraEnv: []

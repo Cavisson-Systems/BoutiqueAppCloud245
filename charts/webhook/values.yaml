@@ -1,0 +1,434 @@
+serviceaccount: webhook-injector
+deploymentName: webhook-server
+webhookName: webhook-nd
+
+replicas: 1
+certValidityDays: 1024
+
+timeoutSeconds: 2
+failurePolicy: Ignore
+useServiceCAonOCP: true
+
+webhook:
+  logLevel: INFO
+
+# service type and port for webhook server
+service:
+  type: ClusterIP
+  port: 443
+
+# image for pods running the webhook functionality
+image:
+  repository: cavissonsystem/nd_webhook_injector  
+  tag: 4.16.0.B63
+  pullPolicy: Always
+
+securityContext:
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+
+NDController:
+  proxyip: cavproxy.cavisson.svc.cluster.local                 #<service-name>.<namespace>.svc.cluster.local
+  proxyport: 443
+  proxymode: 1
+
+instrumentationTemplates:
+  - name: dotnet-default-debian
+    injectionRules:
+      technology: dotnet
+      image: cavissonsystem/dotnet-agent-ubuntu:4.16.0.B63 # (debian agent)
+      TierNameSource: auto
+
+      # Tier Name → The Webhook Injector will dynamically derive the tier name based on the defined conditions and set it as an environment variable for each pod.
+      # Server Name → The agent will set the server name using the pod name.
+      # Instance Name → The agent will set the instance name using the process name.
+
+      env:
+        - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
+          value: /opt/cavisson/netdiagnostics
+        - name: CORECLR_PROFILER                       # GUID of the .NET Core profiler used for instrumentation.
+          value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+        - name: CORECLR_ENABLE_PROFILING               # Enables the profiling feature of the .NET runtime.
+          value: "1"
+        - name: CORECLR_PROFILER_PATH                  # Path to the profiler library loaded by the .NET runtime.
+          value: /opt/cavisson/netdiagnostics/DotNetC/dll/ILRewriteProfiler.so
+        - name: LD_LIBRARY_PATH                        # Path to the library directory used by the .NET runtime.
+          value: /opt/cavisson/netdiagnostics/DotNetC/lib:$(LD_LIBRARY_PATH)
+        - name: DOTNET_STARTUP_HOOKS                   # Path to the startup hook library executed when the .NET application starts.
+          value: /opt/cavisson/netdiagnostics/DotNetC/dll/ProfilerHelper.dll
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE         # Agent logging mode: "0" = file, "1" = console, "2" = both console and file.
+          value: "1"
+        - name: ND_DOTNET_ENABLE_EFCORE_EVENTCOUNTERS  # Collects and aggregates EF Core 8 EventCounter metrics for runtime monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_EFCORE_DIAGNOSTICS    # Collects EF Core database metrics using DiagnosticSource events for monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_TASK_MONITORING       # Monitors execution of asynchronous tasks (background jobs, parallel processing, other async operations).
+          value: "0"
+        - name: DOTNET_EnableDiagnostics_IPC
+          value: "1"
+
+      volumes:
+        - name: tmp-writable
+          mountPath: /tmp
+
+  - name: dotnet-default-alpine
+    injectionRules:
+      technology: dotnet
+      image: cavissonsystem/dotnet-agent-alpine:4.16.0.B63 # (alpine agent)
+      TierNameSource: auto
+
+      env:
+        - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
+          value: /opt/cavisson/netdiagnostics
+        - name: CORECLR_PROFILER                       # GUID of the .NET Core profiler used for instrumentation.
+          value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+        - name: CORECLR_ENABLE_PROFILING               # Enables the profiling feature of the .NET runtime.
+          value: "1"
+        - name: CORECLR_PROFILER_PATH                  # Path to the profiler library loaded by the .NET runtime.
+          value: /opt/cavisson/netdiagnostics/DotNetC/dll/ILRewriteProfiler.so
+        - name: LD_LIBRARY_PATH                        # Path to the library directory used by the .NET runtime.
+          value: /opt/cavisson/netdiagnostics/DotNetC/lib:$(LD_LIBRARY_PATH)
+        - name: DOTNET_STARTUP_HOOKS                   # Path to the startup hook library executed when the .NET application starts.
+          value: /opt/cavisson/netdiagnostics/DotNetC/dll/ProfilerHelper.dll
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE         # Agent logging mode: "0" = file, "1" = console, "2" = both console and file.
+          value: "1"
+        - name: ND_DOTNET_ENABLE_EFCORE_EVENTCOUNTERS  # Collects and aggregates EF Core 8 EventCounter metrics for runtime monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_EFCORE_DIAGNOSTICS    # Collects EF Core database metrics using DiagnosticSource events for monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_TASK_MONITORING
+          value: "0"
+        - name: DOTNET_EnableDiagnostics_IPC           # Allow to create IPC socket to communicate to a process at run time
+          value: "1"
+
+      volumes:
+        - name: tmp-writable
+          mountPath: /tmp
+
+  - name: otel-dotnet-default-debian
+    injectionRules:
+      technology: dotnet
+      image: cavissonsystem/otel-dotnet-agent-debian:4.15.0.B86 # (debian agent)
+      TierNameSource: auto
+
+      env:
+        - name: NDHOME
+          value: /opt/cavisson/netdiagnostics
+        - name: CORECLR_ENABLE_PROFILING
+          value: "1"
+        - name: CORECLR_PROFILER
+          value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+        - name: CORECLR_PROFILER_PATH
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
+        - name: LD_LIBRARY_PATH
+          value: /opt/cavisson/netdiagnostics/DotNetC/lib:$(LD_LIBRARY_PATH)
+        - name: DOTNET_STARTUP_HOOKS
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
+        - name: OTEL_SERVICE_NAME
+          value: Dotnet-Otel-Service
+        - name: OTEL_DOTNET_AUTO_HOME
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto
+        - name: OTEL_DOTNET_AUTO_PLUGINS
+          value: com.cavisson.otel.plugins.NDOtelPlugin,NDOtelPlugin
+        - name: OTEL_HOME
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: https://netcloud4-16-u24.cav-test.com:443
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE
+          value: "1"
+        - name: ND_DOTNET_ENABLE_EFCORE_EVENTCOUNTERS  # Collects and aggregates EF Core 8 EventCounter metrics for runtime monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_EFCORE_DIAGNOSTICS    # Collects EF Core database metrics using DiagnosticSource events for monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_TASK_MONITORING       # Monitors execution of asynchronous tasks (background jobs, parallel processing, other async operations).
+          value: "0"
+        - name: CAV_APP_OTEL_AGENT
+          value: "1"
+        - name: DOTNET_EnableDiagnostics_IPC
+          value: "1"
+
+      volumes:
+        - name: tmp-writable
+          mountPath: /tmp
+
+  - name: otel-dotnet-default-alpine
+    injectionRules:
+      technology: dotnet
+      image: cavissonsystem/otel-dotnet-agent-alpine:4.15.0.B86 # (alpine agent)
+      TierNameSource: auto
+
+      env:
+        - name: NDHOME
+          value: /opt/cavisson/netdiagnostics
+        - name: CORECLR_ENABLE_PROFILING
+          value: "1"
+        - name: CORECLR_PROFILER
+          value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
+        - name: CORECLR_PROFILER_PATH
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/linux-musl-x64/OpenTelemetry.AutoInstrumentation.Native.so
+        - name: LD_LIBRARY_PATH
+          value: /opt/cavisson/netdiagnostics/DotNetC/lib:$(LD_LIBRARY_PATH)
+        - name: DOTNET_STARTUP_HOOKS
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll
+        - name: OTEL_SERVICE_NAME
+          value: dotnetCoreApp
+        - name: OTEL_DOTNET_AUTO_HOME
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto
+        - name: OTEL_DOTNET_AUTO_PLUGINS
+          value: com.cavisson.otel.plugins.NDOtelPlugin,NDOtelPlugin
+        - name: OTEL_HOME
+          value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: https://netcloud4-16-u24.cav-test.com:443
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE
+          value: "1"
+        - name: ND_DOTNET_ENABLE_EFCORE_EVENTCOUNTERS  # Collects and aggregates EF Core 8 EventCounter metrics for runtime monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_EFCORE_DIAGNOSTICS    # Collects EF Core database metrics using DiagnosticSource events for monitoring.
+          value: "0"
+        - name: ND_DOTNET_ENABLE_TASK_MONITORING       # Monitors execution of asynchronous tasks (background jobs, parallel processing, other async operations).
+          value: "0"
+        - name: CAV_APP_OTEL_AGENT
+          value: "1"
+        - name: DOTNET_EnableDiagnostics_IPC
+          value: "1"
+
+      volumes:
+        - name: tmp-writable
+          mountPath: /tmp
+
+  - name: python-default
+    injectionRules:
+      technology: python
+      image: cavissonsystem/python-agent:4.15.0.B134
+      TierNameSource: auto
+
+  - name: otel-python-default-debian
+    injectionRules:
+      technology: python-otel
+      image: cavissonsystems/pythonotelagent:v2 # TODO: replace with the built OTel-capable agent image
+      TierNameSource: auto
+
+      env:
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: https://netcloud4-16-u24.cav-test.com:443/v1/traces # TODO: point at your OTLP collector
+        - name: OTEL_TRACES_EXPORTER
+          value: none
+        - name: CAV_APP_OTEL_AGENT
+          value: "1"
+
+  - name: java-default
+    injectionRules:
+      technology: java
+      image: cavissonsystem/java-agent:4.15.0.131  # TODO: replace with cavissonsystem java agent image
+      javaEnvVar: JAVA_TOOL_OPTIONS
+      javaCustomConfig: ""                         # "-Dorg.osgi.framework.bootdelegation=com.cavisson.*" -> for OSGI , "-Djboss.modules.system.pkgs=com.cavisson.ndutils" -> for JBoss
+      TierNameSource: auto
+
+      env:
+        - name: NDHOME
+          value: /opt/cavisson/netdiagnostics
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE
+          value: "ALL"
+        - name: CAV_APP_AGENT_NDCHOST
+          value: "netcloud4-16.cav-test.com"
+        - name: CAV_APP_AGENT_NDCPORT
+          value: "4472"
+        - name: CAV_APP_AGENT_NDC_COMM_PROTOCOL
+          value: "WSS"
+
+  - name: otel-java-default
+    injectionRules:
+      technology: java
+      image: cavissonsystem/otel-java-agent-otel:4.15.0.131  # TODO: replace with published OTEL java agent image
+      javaEnvVar: JAVA_TOOL_OPTIONS
+      TierNameSource: auto
+      javaCustomConfig: >-
+        -javaagent:"$(NDHOME)/java/lib/cav-otel-javaagent.jar"
+        -Dotel.service.name=$(OTEL_SERVICE_NAME)
+        -Dotel.metrics.exporter=$(OTEL_METRICS_EXPORTER)
+        -Dotel.exporter.otlp.endpoint=$(OTEL_EXPORTER_OTLP_ENDPOINT)
+        -Dotel.traces.exporter=$(OTEL_TRACES_EXPORTER)
+        -Dcav.ndAgentJar="$(NDHOME)/java/lib/ndagent-with-dep.jar"
+        -Dcav.ndHome="$(NDHOME)/java"
+
+      env:
+        - name: NDHOME
+          value: /opt/cavisson/netdiagnostics
+        - name: OTEL_SERVICE_NAME
+          value: Java_Webhook_OtelService
+        - name: OTEL_METRICS_EXPORTER
+          value: cav-nd-metrics-exporter
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: https://netcloud4-16-u24.cav-test.com:443
+        - name: OTEL_TRACES_EXPORTER
+          value: otlp
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE
+          value: "ALL"
+        - name: CAV_APP_AGENT_NDCHOST
+          value: "netcloud4-16.cav-test.com"
+        - name: CAV_APP_AGENT_NDCPORT
+          value: "4472"
+        - name: CAV_APP_AGENT_NDC_COMM_PROTOCOL
+          value: "WSS"
+        - name: CAV_APP_OTEL_AGENT
+          value: "1"
+
+  - name: nodejs-default
+    injectionRules:
+      technology: nodejs
+      image: cavissonsystem/node.js-agent:4.15.0.B132  # TODO: replace with cavissonsystem nodejs agent image
+      TierNameSource: auto
+
+      env:
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE
+          value: "ALL"
+        - name: CAV_APP_AGENT_NDCHOST
+          value: "netcloud4-16.cav-test.com"
+        - name: CAV_APP_AGENT_NDCPORT
+          value: "4472"
+        - name: CAV_APP_AGENT_NDC_COMM_PROTOCOL
+          value: "WSS"
+
+  - name: otel-nodejs-default
+    injectionRules:
+      technology: nodejs
+      image: cavissonsystem/nodejs-agent:4.15.0.B132  # TODO: replace with cavissonsystem nodejs agent image
+      TierNameSource: auto
+
+      env:
+        - name: CAV_APP_AGENT_AGENTLOGGINGMODE
+          value: "ALL"
+        - name: CAV_APP_AGENT_NDCHOST
+          value: "netcloud4-16.cav-test.com"
+        - name: CAV_APP_AGENT_NDCPORT
+          value: "4472"
+        - name: CAV_APP_AGENT_NDC_COMM_PROTOCOL
+          value: "WSS"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "https://netcloud4-16-u24.cav-test.com:443"
+        - name: OTEL_LOGS_EXPORTER
+          value: "otlp"
+        - name: CAV_APP_OTEL_AGENT
+          value: "1"
+
+
+instrumentationRules:
+  - name: cav-dotnet-agent-debian
+    matchRules:
+      namespaceRegex: .*            # ^cavisson$ (format for specific nameSpace)
+      podNameRegex: ^(eshoppublicapi|eshopwebmvc)
+    injectionRules:
+      template: dotnet-default-debian
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-dotnet-agent-alpine
+    matchRules:
+      namespaceRegex: .*            # ^cavisson$ (format for specific nameSpace)
+      labels:
+        - com.cavisson/inject-dotnetc-alpine: "true"
+      podNameRegex: .*
+    injectionRules:
+      template: dotnet-default-alpine
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-otel-dotnet-agent-debian
+    matchRules:
+      namespaceRegex: .*            # ^cavisson$ (format for specific nameSpace)
+      labels:
+        - com.cavisson/inject-otel-dotnetc-debian: "true"
+      podNameRegex: .*
+    injectionRules:
+      template: otel-dotnet-default-debian
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-otel-dotnet-agent-alpine
+    matchRules:
+      namespaceRegex: .*            # ^cavisson$ (format for specific nameSpace)
+      labels:
+        - com.cavisson/inject-otel-dotnetc-alpine: "true"
+      podNameRegex: .*
+    injectionRules:
+      template: otel-dotnet-default-alpine
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-python-agent
+    matchRules:
+      namespaceRegex: .*
+      podNameRegex: ^(emailservice|recommendationservice)
+    injectionRules:
+      template: python-default
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-otel-python-agent-debian
+    matchRules:
+      namespaceRegex: .*
+      labels:
+        - com.cavisson/inject-otel-python-debian: "true"
+      podNameRegex: .*
+    injectionRules:
+      template: otel-python-default-debian
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-java-agent
+    matchRules:
+      namespaceRegex: .*
+      podNameRegex: ^(frontend|checkoutservice|adservice)
+      # namespaceExcludeRegex: ^(kube-system|cavisson)$   # skip injection in these namespaces
+      # podNameExcludeRegex: ^batch-.*                     # skip pods with these names
+      # (if a specific namespaceRegex/podNameRegex also matches, the positive regex wins; ".*" does not override excludes)
+    injectionRules:
+      template: java-default
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-otel-java-agent
+    matchRules:
+      namespaceRegex: .*
+      labels:
+        - com.cavisson/inject-otel-java: "true"
+      podNameRegex: .*
+    injectionRules:
+      template: otel-java-default
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-nodejs-agent
+    matchRules:
+      namespaceRegex: .*
+      podNameRegex: ^(paymentservice|currencyservice)
+      # namespaceExcludeRegex: ^(kube-system|cavisson)$   # skip injection in these namespaces
+      # podNameExcludeRegex: ^batch-.*                     # skip pods with these names
+      # (if a specific namespaceRegex/podNameRegex also matches, the positive regex wins; ".*" does not override excludes)
+    injectionRules:
+      template: nodejs-default
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy
+
+  - name: cav-otel-nodejs-agent
+    matchRules:
+      namespaceRegex: .*
+      labels:
+        - com.cavisson/inject-otel-nodejs: "true"
+      podNameRegex: .*
+    injectionRules:
+      template: otel-nodejs-default
+      containerMatch:
+        excludeContainerNames:
+          - istio-proxy

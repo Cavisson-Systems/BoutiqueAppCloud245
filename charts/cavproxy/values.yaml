@@ -1,0 +1,36 @@
+enabled: true
+tls-enabled: false
+
+replicas: 1
+
+image:
+  repository: cavissonsystem/cavndproxy-alpine
+  tag: 4.15.0.B123
+  pullPolicy: Always
+
+port: 7923
+servicePort: 443
+
+ndhome: "/opt/cavisson/netdiagnostics"
+ldLibraryPath: "/usr/lib/x86_64-linux-gnu"
+ndcHost: "netcloud4-16.cav-test.com"
+ndcPort: "4472"
+ndcCommProtocol: "WSS"
+loggingMode: "2"
+verifyServerCert: "1"
+verifyHostName: "0"
+acceptSelfSignedCert: "0"
+acceptExpiredCert: "0"
+acceptRevokedCert: "0"
+serverCaCert: "your-ca-bundle.crt"
+clientCert: "your-client-cert.cer"
+clientKey: "your-client-privatekey.key"
+tlsSecretName: tls-secret
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "2Gi"
+  limits:
+    cpu: "500m"
+    memory: "2Gi"
