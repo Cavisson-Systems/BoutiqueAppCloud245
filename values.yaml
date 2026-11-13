@@ -2,7 +2,7 @@ cmon:
   enabled: true
   tls-enabled: false
   image:
-    tag: "4.16.0.B86" # replace the tag version 
+    tag: "4.16.0.B90" # replace the tag version 
 
   controller: "netcloud4-16.cav-test.com:4472" #add your controller host
   clusterName: "k8s245Cluster"
@@ -18,7 +18,7 @@ cavproxy:
   tls-enabled: false
   image:
     repository: cavissonsystem/cavndproxy-alpine
-    tag: 4.16.0.B86
+    tag: 4.16.0.B90
     pullPolicy: Always
 
   ndhome: "/opt/cavisson/netdiagnostics"
@@ -42,20 +42,20 @@ webhook:
   enabled: true
   image:
     repository: cavissonsystem/nd_webhook_injector
-    tag: 4.16.0.B86
+    tag: 4.16.0.B90
     pullPolicy: Always
 
   instrumentationTemplates:
     - name: dotnet-default-debian
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/dotnet-agent-ubuntu:4.16.0.B86
+        image: cavissonsystem/dotnet-agent-ubuntu:4.16.0.B90
         TierNameSource: auto
         env:
           - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
             value: /opt/cavisson/netdiagnostics
           - name: CORECLR_PROFILER                       # GUID of the .NET Core profiler used for instrumentation.
-            value: "{918728DD-259F-4A6A-AC2B-B86E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
           - name: CORECLR_ENABLE_PROFILING               # Enables the profiling feature of the .NET runtime.
             value: "1"
           - name: CORECLR_PROFILER_PATH                  # Path to the profiler library loaded by the .NET runtime.
@@ -82,13 +82,13 @@ webhook:
     - name: dotnet-default-alpine
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/dotnet-agent-alpine:4.16.0.B86
+        image: cavissonsystem/dotnet-agent-alpine:4.16.0.B90
         TierNameSource: auto
         env:
           - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
             value: /opt/cavisson/netdiagnostics
           - name: CORECLR_PROFILER                       # GUID of the .NET Core profiler used for instrumentation.
-            value: "{918728DD-259F-4A6A-AC2B-B86E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
           - name: CORECLR_ENABLE_PROFILING               # Enables the profiling feature of the .NET runtime.
             value: "1"
           - name: CORECLR_PROFILER_PATH                  # Path to the profiler library loaded by the .NET runtime.
@@ -115,7 +115,7 @@ webhook:
     - name: otel-dotnet-default-debian
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/otel-dotnet-agent-debian:4.15.0.B86
+        image: cavissonsystem/otel-dotnet-agent-debian:4.15.0.B90
         TierNameSource: auto
         env:
           - name: NDHOME
@@ -123,7 +123,7 @@ webhook:
           - name: CORECLR_ENABLE_PROFILING
             value: "1"
           - name: CORECLR_PROFILER
-            value: "{918728DD-259F-4A6A-AC2B-B86E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
           - name: CORECLR_PROFILER_PATH
             value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
           - name: LD_LIBRARY_PATH
@@ -160,7 +160,7 @@ webhook:
     - name: otel-dotnet-default-alpine
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/otel-dotnet-agent-alpine:4.15.0.B86
+        image: cavissonsystem/otel-dotnet-agent-alpine:4.15.0.B90
         TierNameSource: auto
         env:
           - name: NDHOME
@@ -168,7 +168,7 @@ webhook:
           - name: CORECLR_ENABLE_PROFILING
             value: "1"
           - name: CORECLR_PROFILER
-            value: "{918728DD-259F-4A6A-AC2B-B86E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
           - name: CORECLR_PROFILER_PATH
             value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/linux-musl-x64/OpenTelemetry.AutoInstrumentation.Native.so
           - name: LD_LIBRARY_PATH
@@ -224,7 +224,7 @@ webhook:
     - name: java-default
       injectionRules:
         technology: java
-        image: cavissonsystem/java-agent:4.16.0.B87  # TODO: replace with cavissonsystem java agent image
+        image: cavissonsystem/java-agent:4.16.0.B90  # TODO: replace with cavissonsystem java agent image
         javaEnvVar: JAVA_TOOL_OPTIONS
         javaCustomConfig: ""                         # "-Dorg.osgi.framework.bootdelegation=com.cavisson.*" -> for OSGI , "-Djboss.modules.system.pkgs=com.cavisson.ndutils" -> for JBoss
         TierNameSource: auto
@@ -279,7 +279,7 @@ webhook:
     - name: nodejs-default
       injectionRules:
         technology: nodejs
-        image: cavissonsystem/node.js-agent:4.16.0.B87  # TODO: replace with cavissonsystem nodejs agent image
+        image: cavissonsystem/node.js-agent:4.16.0.B90  # TODO: replace with cavissonsystem nodejs agent image
         TierNameSource: auto
         env:
           - name: CAV_APP_AGENT_AGENTLOGGINGMODE
@@ -316,7 +316,7 @@ clusterAgent:
   enabled: true
   image:
     repository: cavissonsystem/cavisson-cluster-agent
-    tag: 4.16.0.B86
+    tag: 4.16.0.B90
 
   # KubeOpt backend - prefer https
   kubeoptUrl: "http://66.220.31.135:7927"
