@@ -55,7 +55,7 @@ webhook:
           - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
             value: /opt/cavisson/netdiagnostics
           - name: CORECLR_PROFILER                       # GUID of the .NET Core profiler used for instrumentation.
-            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
           - name: CORECLR_ENABLE_PROFILING               # Enables the profiling feature of the .NET runtime.
             value: "1"
           - name: CORECLR_PROFILER_PATH                  # Path to the profiler library loaded by the .NET runtime.
@@ -88,7 +88,7 @@ webhook:
           - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
             value: /opt/cavisson/netdiagnostics
           - name: CORECLR_PROFILER                       # GUID of the .NET Core profiler used for instrumentation.
-            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
           - name: CORECLR_ENABLE_PROFILING               # Enables the profiling feature of the .NET runtime.
             value: "1"
           - name: CORECLR_PROFILER_PATH                  # Path to the profiler library loaded by the .NET runtime.
@@ -123,7 +123,7 @@ webhook:
           - name: CORECLR_ENABLE_PROFILING
             value: "1"
           - name: CORECLR_PROFILER
-            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
           - name: CORECLR_PROFILER_PATH
             value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/linux-x64/OpenTelemetry.AutoInstrumentation.Native.so
           - name: LD_LIBRARY_PATH
@@ -168,7 +168,7 @@ webhook:
           - name: CORECLR_ENABLE_PROFILING
             value: "1"
           - name: CORECLR_PROFILER
-            value: "{918728DD-259F-4A6A-AC2B-B90E1B658318}"
+            value: "{918728DD-259F-4A6A-AC2B-B85E1B658318}"
           - name: CORECLR_PROFILER_PATH
             value: /opt/cavisson/netdiagnostics/DotNetC/.otel-dotnet-auto/linux-musl-x64/OpenTelemetry.AutoInstrumentation.Native.so
           - name: LD_LIBRARY_PATH
