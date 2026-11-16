@@ -40,10 +40,20 @@ spec:
               value: {{ .Values.datasourceName | quote }}
             - name: CLUSTER_NAME
               value: {{ .Values.clusterName | quote }}
-            # Flux disabled. Agents from this change on install Flux only when FLUX_ENABLED="true";
-            # the explicit "false" also keeps older agent images (which defaulted to on) from installing it.
+            # Agents install Flux only when FLUX_ENABLED="true"; always rendered explicitly so
+            # older agent images (which defaulted to on) honour the value.
             - name: FLUX_ENABLED
-              value: "false"
+              value: {{ .Values.flux.enabled | quote }}
+            - name: FLUX_GIT_URL
+              value: {{ .Values.flux.gitUrl | quote }}
+            - name: FLUX_GIT_BRANCH
+              value: {{ .Values.flux.gitBranch | quote }}
+            - name: FLUX_GIT_PATH
+              value: {{ .Values.flux.gitPath | quote }}
+            - name: FLUX_VERSION
+              value: {{ .Values.flux.version | quote }}
+            - name: FLUX_REGISTRY
+              value: {{ .Values.flux.registry | quote }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:
