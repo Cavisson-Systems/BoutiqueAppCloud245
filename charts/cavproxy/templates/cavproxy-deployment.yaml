@@ -13,6 +13,8 @@ spec:
       labels:
         app: cavproxy
     spec:
+      # Prevent unnecessary ServiceAccount token mounting to improve Pod security.
+      automountServiceAccountToken: false
       containers:
         - name: cavproxy
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
