@@ -315,8 +315,8 @@ webhook:
 clusterAgent:
   enabled: true
   image:
-    repository: cavissonsystem/cavisson-cluster-agent
-    tag: 4.16.0.B90
+    repository: cavissonsystem/cluster-agent
+    tag: test4
 
   # KubeOpt backend - prefer https
   kubeoptUrl: "http://66.220.31.135:7927"
