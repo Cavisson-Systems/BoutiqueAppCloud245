@@ -1,13 +1,14 @@
 enabled: true
 
 image:
-  repository: cavissonsystem/cluster-agent
-  tag: 4.16.0.B69
+  repository: cavissonsystem/cavisson-cluster-agent
+  tag: 4.16.0.B60
   pullPolicy: IfNotPresent
 
 replicas: 1
 terminationGracePeriodSeconds: 200
 
+# Sized for clusters with up to 1,000 pods (see README "Cluster Agent: recommended CPU and memory")
 resources:
   requests:
     cpu: "200m"
@@ -25,9 +26,15 @@ clusterName: "cavission-test"
 vpaNamespace: "cavisson-vpa"
 zapNamespace: "security-system"
 
-# Flux and Kyverno are disabled: the agent only collects cluster inventory.
-# The agent installs Flux only when FLUX_ENABLED="true" and Kyverno only when
-# KYVERNO_POLICY_ENABLED="true"; the Deployment renders FLUX_ENABLED="false" explicitly
-# for older agent images, which installed Flux when the variable was unset.
+# Flux GitOps settings (rendered as FLUX_* env vars on the agent).
+flux:
+  enabled: true
+  gitUrl: "https://github.com/Cavisson-Systems/Flux-CD.git"
+  gitBranch: "main"
+  gitPath: "./boutique-fluxcd"
+  version: "v2.8.6"
+  registry: "ghcr.io/fluxcd"
+
+# Kyverno is disabled: installed only when KYVERNO_POLICY_ENABLED="true".
 
 extraEnv: []
