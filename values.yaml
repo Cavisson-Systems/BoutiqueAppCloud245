@@ -2,7 +2,7 @@ cmon:
   enabled: true
   tls-enabled: false
   image:
-    tag: "4.16.0.B90" # replace the tag version 
+    tag: "4.16.0.B91" # replace the tag version 
 
   controller: "netcloud4-16.cav-test.com:4472" #add your controller host
   clusterName: "k8s245Cluster"
