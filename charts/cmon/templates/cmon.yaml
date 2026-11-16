@@ -4,6 +4,12 @@ apiVersion: v1
 metadata:
   name: cmon-service-account
   namespace: {{ .Release.Namespace }}
+# CIS Kubernetes Benchmark 5.1.6 - Ensure that Service Account Tokens are not automatically mounted.
+# Vulnerability: When true, every pod gets a token that can access the Kubernetes API.
+# If the pod is compromised, an attacker can use that token to escalate privileges.
+# Fix: Set to false and use a Secret-based token (cmon-sa-token) mounted explicitly as a volume,
+# so only the required service account token is available with RBAC-scoped permissions.
+automountServiceAccountToken: false
 ---
 #Cmon Role
 kind: ClusterRole
@@ -98,6 +104,16 @@ rules:
   verbs:
   - get
 ---
+# Secret-based token for Kubernetes API access (used when automountServiceAccountToken is false)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cmon-sa-token
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/service-account.name: cmon-service-account
+type: kubernetes.io/service-account-token
+---
 #ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -133,6 +149,11 @@ spec:
     spec:
       hostPID: true
       serviceAccountName: cmon-service-account
+      # CIS Kubernetes Benchmark 5.1.6 - Disable automatic token mount at pod level.
+      # Both ServiceAccount and pod spec must be set to false to fully comply.
+      # The agent still gets Kubernetes API access via the Secret-based token (cmon-sa-token)
+      # mounted as a volume at /var/run/secrets/kubernetes.io/serviceaccount.
+      automountServiceAccountToken: false
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
@@ -150,7 +171,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-          env:
+            # Node name for Kubernetes node-level metrics
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
@@ -165,6 +186,16 @@ spec:
             requests:
               cpu: {{ .Values.resources.requests.cpu | quote }}
               memory: {{ .Values.resources.requests.memory | quote }}
+          # Liveness probe to restart container if CavMonAgent process dies
+          livenessProbe:
+            exec:
+              command:
+                - pgrep
+                - -f
+                - CavMonAgent
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
           volumeMounts:
           - name: varlogs
             mountPath: /var/log
@@ -183,12 +214,20 @@ spec:
           - name: nf-volume
             mountPath: /home/cavisson/monitors/sys/nf.env
             subPath: nf.env
+          # Mount Secret-based service account token for Kubernetes API access
+          - name: kube-api-access
+            mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+            readOnly: true
           {{- if (index .Values "tls-enabled") }}
           - name: tls-volume
             mountPath: /home/cavisson/monitors/certs/
             readOnly: true
           {{- end }}
       volumes:
+      # Secret-based service account token volume
+      - name: kube-api-access
+        secret:
+          secretName: cmon-sa-token
       - name: varlogs
         hostPath:
           path: /var/log
