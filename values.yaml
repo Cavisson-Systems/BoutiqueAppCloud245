@@ -18,7 +18,7 @@ cavproxy:
   tls-enabled: false
   image:
     repository: cavissonsystem/cavndproxy-alpine
-    tag: 4.16.0.B90
+    tag: 4.16.0.B91
     pullPolicy: Always
 
   ndhome: "/opt/cavisson/netdiagnostics"
