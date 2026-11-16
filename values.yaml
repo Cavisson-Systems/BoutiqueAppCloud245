@@ -42,7 +42,7 @@ webhook:
   enabled: true
   image:
     repository: cavissonsystem/nd_webhook_injector
-    tag: 4.16.0.B90
+    tag: 4.16.0.B91
     pullPolicy: Always
 
   instrumentationTemplates:
