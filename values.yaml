@@ -49,7 +49,7 @@ webhook:
     - name: dotnet-default-debian
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/dotnet-agent-ubuntu:4.16.0.B90
+        image: cavissonsystem/dotnet-agent-ubuntu:4.16.0.B91
         TierNameSource: auto
         env:
           - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
@@ -82,7 +82,7 @@ webhook:
     - name: dotnet-default-alpine
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/dotnet-agent-alpine:4.16.0.B90
+        image: cavissonsystem/dotnet-agent-alpine:4.16.0.B91
         TierNameSource: auto
         env:
           - name: NDHOME                                 # Path to the NetDiagnostics installation directory.
@@ -115,7 +115,7 @@ webhook:
     - name: otel-dotnet-default-debian
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/otel-dotnet-agent-debian:4.15.0.B90
+        image: cavissonsystem/otel-dotnet-agent-debian:4.15.0.B91
         TierNameSource: auto
         env:
           - name: NDHOME
@@ -160,7 +160,7 @@ webhook:
     - name: otel-dotnet-default-alpine
       injectionRules:
         technology: dotnet
-        image: cavissonsystem/otel-dotnet-agent-alpine:4.15.0.B90
+        image: cavissonsystem/otel-dotnet-agent-alpine:4.15.0.B91
         TierNameSource: auto
         env:
           - name: NDHOME
@@ -224,7 +224,7 @@ webhook:
     - name: java-default
       injectionRules:
         technology: java
-        image: cavissonsystem/java-agent:4.16.0.B90  # TODO: replace with cavissonsystem java agent image
+        image: cavissonsystem/java-agent:4.16.0.B91  # TODO: replace with cavissonsystem java agent image
         javaEnvVar: JAVA_TOOL_OPTIONS
         javaCustomConfig: ""                         # "-Dorg.osgi.framework.bootdelegation=com.cavisson.*" -> for OSGI , "-Djboss.modules.system.pkgs=com.cavisson.ndutils" -> for JBoss
         TierNameSource: auto
@@ -279,7 +279,7 @@ webhook:
     - name: nodejs-default
       injectionRules:
         technology: nodejs
-        image: cavissonsystem/node.js-agent:4.16.0.B90  # TODO: replace with cavissonsystem nodejs agent image
+        image: cavissonsystem/node.js-agent:4.16.0.B91  # TODO: replace with cavissonsystem nodejs agent image
         TierNameSource: auto
         env:
           - name: CAV_APP_AGENT_AGENTLOGGINGMODE
