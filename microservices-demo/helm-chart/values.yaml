@@ -20,7 +20,7 @@ images:
   #repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
   repository: cavissonsystem
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "javaV9"
 
 serviceAccounts:
   # Specifies whether service accounts should be created.
