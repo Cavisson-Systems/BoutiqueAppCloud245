@@ -180,7 +180,7 @@ recommendationService:
   name: recommendationservice
   resources:
     requests:
-      cpu: 100m
+      cpu: 150m
       memory: 220Mi
     limits:
       cpu: 200m
