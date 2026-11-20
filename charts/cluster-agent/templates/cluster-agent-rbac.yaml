@@ -78,9 +78,11 @@ rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["aquasecurity.github.io"]    
+    resources: ["clustercompliancereports"]    
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   - apiGroups: ["aquasecurity.github.io"]
     resources:
-      - clustercompliancereports
       - clustercompliancereportscans
       - vulnerabilityreports
       - configauditreports
