@@ -78,6 +78,29 @@ rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["get", "list", "watch"]
+  - apiGroups: ["aquasecurity.github.io"]
+    resources:
+      - clustercompliancereports
+      - clustercompliancereportscans
+      - vulnerabilityreports
+      - configauditreports
+      - exposedsecretreports
+      - rbacassessmentreports
+      - infraassessmentreports
+      - clustervulnerabilityreports
+      - clusterconfigauditreports
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["security.company.local"]
+    resources:
+      - zapscanprofiles
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
   - apiGroups: [""]
     resources: ["persistentvolumeclaims", "persistentvolumes"]
     verbs: ["get", "list", "watch"]
