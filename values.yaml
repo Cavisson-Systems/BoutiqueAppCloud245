@@ -319,7 +319,8 @@ clusterAgent:
     tag: test4
 
   # KubeOpt backend - prefer https
-  kubeoptUrl: "http://66.220.31.135:7927"
+  #kubeoptUrl: "http://66.220.31.135:7927"
+  kubeoptUrl: "http://10.10.50.70:7927"
   clusterName: "k8s245Cluster"
   # Sized for up to 1,000 pods — see README "Cluster Agent: recommended CPU and memory"
   resources:
