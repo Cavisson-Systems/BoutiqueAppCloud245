@@ -2,6 +2,7 @@ cmon:
   enabled: true
   tls-enabled: false
   image:
+    repository: cloud-build.cav-test.com/cmon_nf_agent
     tag: "4.16.0.B94" # replace the tag version 
 
   controller: "netcloud4-16.cav-test.com:4472" #add your controller host
