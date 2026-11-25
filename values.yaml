@@ -17,7 +17,7 @@ cavproxy:
   enabled: true
   tls-enabled: false
   image:
-    repository: cavissonsystem/cavndproxy-alpine
+    repository: cloud-build.cav-test.com/cavndproxy-alpine
     tag: 4.16.0.B94
     pullPolicy: Always
 
@@ -41,7 +41,7 @@ cavproxy:
 webhook:
   enabled: true
   image:
-    repository: cavissonsystem/nd_webhook_injector
+    repository: cloud-build.cav-test.com/nd_webhook_injector
     tag: 4.16.0.B94
     pullPolicy: Always
 
