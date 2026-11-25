@@ -320,7 +320,7 @@ clusterAgent:
 
   # KubeOpt backend - prefer https
   #kubeoptUrl: "http://66.220.31.135:7927"
-  kubeoptUrl: "http://build.cav-test.com:7927"
+  kubeoptUrl: "https://build.cav-test.com:4444/service/kubeOpt/"
   clusterName: "k8s245Cluster"
   # Sized for up to 1,000 pods — see README "Cluster Agent: recommended CPU and memory"
   resources:
