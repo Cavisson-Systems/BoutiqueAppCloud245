@@ -2,7 +2,7 @@ enabled: true
 tls-enabled: false
 
 image:
-  repository: cavissonsystem/cmon_nf_agent
+  repository: cloud-build.cav-test.com/cmon_nf_agent
   tag: "4.16.0.63"
   imagePullPolicy: IfNotPresent
 
