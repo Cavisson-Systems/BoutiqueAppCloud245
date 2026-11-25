@@ -17,9 +17,10 @@
 # Declare variables to be passed into your templates.
 
 images:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
+  #repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
+  repository: cavissonsystem
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "boutiqueV1"
 
 serviceAccounts:
   # Specifies whether service accounts should be created.
