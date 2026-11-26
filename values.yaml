@@ -40,7 +40,7 @@ cavproxy:
 
 
 webhook:
-  enabled: flase
+  enabled: false
   image:
     repository: cloud-build.cav-test.com/nd_webhook_injector
     tag: 4.16.0.B94
