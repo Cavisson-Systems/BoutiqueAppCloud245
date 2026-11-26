@@ -73,9 +73,6 @@ spec:
           image: {{ .Values.images.repository }}/{{ .Values.frontend.name }}:{{ .Values.images.tag | default .Chart.AppVersion }}
           ports:
           - containerPort: 8080
-          volumeMounts:
-          - name: tmp
-            mountPath: /tmp
           readinessProbe:
             initialDelaySeconds: 10
             httpGet:
@@ -135,9 +132,6 @@ spec:
             value: {{ .Values.frontend.singleSharedSession | quote }}
           resources:
             {{- toYaml .Values.frontend.resources | nindent 12 }}
-      volumes:
-      - name: tmp
-        emptyDir: {}            
 ---
 apiVersion: v1
 kind: Service
