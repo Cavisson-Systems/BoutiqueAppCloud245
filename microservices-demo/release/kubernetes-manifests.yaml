@@ -55,7 +55,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/currencyservice:nodeV1 
+        image: cavissonsystem/currencyservice:boutiqueV1 
         ports:
         - name: grpc
           containerPort: 7000
@@ -138,7 +138,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/productcatalogservice:goV1 
+        image: cavissonsystem/productcatalogservice:boutiqueV1 
         ports:
         - containerPort: 3550
         env:
@@ -213,7 +213,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: cavissonsystem/checkoutservice:javaV6
+          image: cavissonsystem/checkoutservice:boutiqueV1
           ports:
           - containerPort: 5050
           readinessProbe:
@@ -298,7 +298,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/shippingservice:goV1 
+        image: cavissonsystem/shippingservice:boutiqueV1 
         ports:
         - containerPort: 50051
         env:
@@ -464,7 +464,7 @@ spec:
             - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/cartservice:v1
+        image: cavissonsystem/cartservice:boutiqueV1
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
@@ -656,7 +656,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/emailservice:pythonV1 
+        image: cavissonsystem/emailservice:boutiqueV1 
         ports:
         - containerPort: 8080
         env:
@@ -734,7 +734,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/paymentservice:nodeV1 
+        image: cavissonsystem/paymentservice:boutiqueV1 
         ports:
         - containerPort: 50051
         env:
@@ -811,7 +811,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: cavissonsystem/frontend:javaV9
+          image: cavissonsystem/frontend:boutiqueV1
           ports:
           - containerPort: 8080
           readinessProbe:
@@ -942,7 +942,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/recommendationservice:pythonV1 
+        image: cavissonsystem/recommendationservice:boutiqueV1 
         ports:
         - containerPort: 8080
         readinessProbe:
@@ -1022,7 +1022,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/adservice:javaV1 
+        image: cavissonsystem/adservice:boutiqueV1 
         ports:
         - containerPort: 9555
         env:
