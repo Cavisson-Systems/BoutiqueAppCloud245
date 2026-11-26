@@ -44,7 +44,7 @@ spec:
               - ALL
           privileged: false
           readOnlyRootFilesystem: true
-        image: cavissonsystem/adservice:boutiqueV1
+        image: cavissonsystem/adservice:javaV1
         ports:
         - containerPort: 9555
         env:
