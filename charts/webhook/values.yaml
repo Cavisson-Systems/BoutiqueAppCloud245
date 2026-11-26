@@ -364,7 +364,8 @@ instrumentationRules:
   - name: cav-python-agent
     matchRules:
       namespaceRegex: .*
-      podNameRegex: ^(emailservice|recommendationservice)
+      podNameRegex: ^(te)
+      #podNameRegex: ^(emailservice|recommendationservice)
     injectionRules:
       template: python-default
       containerMatch:
@@ -386,7 +387,8 @@ instrumentationRules:
   - name: cav-java-agent
     matchRules:
       namespaceRegex: .*
-      podNameRegex: ^(frontend|checkoutservice|adservice)
+      podNameRegex: ^(tf)
+      #podNameRegex: ^(frontend|checkoutservice|adservice)
       # namespaceExcludeRegex: ^(kube-system|cavisson)$   # skip injection in these namespaces
       # podNameExcludeRegex: ^batch-.*                     # skip pods with these names
       # (if a specific namespaceRegex/podNameRegex also matches, the positive regex wins; ".*" does not override excludes)
@@ -411,7 +413,8 @@ instrumentationRules:
   - name: cav-nodejs-agent
     matchRules:
       namespaceRegex: .*
-      podNameRegex: ^(paymentservice|currencyservice)
+      podNameRegex: ^(tpay)
+      #podNameRegex: ^(paymentservice|currencyservice)
       # namespaceExcludeRegex: ^(kube-system|cavisson)$   # skip injection in these namespaces
       # podNameExcludeRegex: ^batch-.*                     # skip pods with these names
       # (if a specific namespaceRegex/podNameRegex also matches, the positive regex wins; ".*" does not override excludes)
