@@ -88,10 +88,10 @@ checkoutService:
   resources:
     requests:
       cpu: 100m
-      memory: 64Mi
+      memory: 256Mi
     limits:
       cpu: 200m
-      memory: 128Mi
+      memory: 512Mi
 
 currencyService:
   create: true
@@ -134,11 +134,11 @@ frontend:
       labelValue: ingressgateway
   resources:
     requests:
-      cpu: 100m
-      memory: 64Mi
+      cpu: 512m
+      memory: 256Mi
     limits:
-      cpu: 200m
-      memory: 128Mi
+      cpu: 756m
+      memory: 512Mi
 
 loadGenerator:
   create: true
