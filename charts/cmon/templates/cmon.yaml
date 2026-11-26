@@ -187,15 +187,15 @@ spec:
               cpu: {{ .Values.resources.requests.cpu | quote }}
               memory: {{ .Values.resources.requests.memory | quote }}
           # Liveness probe to restart container if CavMonAgent process dies
-          livenessProbe:
-            exec:
-              command:
-                - pgrep
-                - -f
-                - CavMonAgent
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            failureThreshold: 3
+          #livenessProbe:
+            #exec:
+              #command:
+              #  - pgrep
+              #  - -f
+             #   - CavMonAgent
+            #initialDelaySeconds: 30
+            #periodSeconds: 10
+            #failureThreshold: 3
           volumeMounts:
           - name: varlogs
             mountPath: /var/log
