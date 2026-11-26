@@ -20,7 +20,7 @@ metadata:
   labels:
     app: frontend
 spec:
-  replicas: 25
+  replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -51,7 +51,7 @@ spec:
                 - ALL
             privileged: false
             readOnlyRootFilesystem: true
-          image: cavissonsystem/frontend:javaV9
+          image: cavissonsystem/frontend:boutiqueV1
           ports:
           - containerPort: 8080
           volumeMounts:
